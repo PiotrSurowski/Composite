@@ -2,6 +2,7 @@ package pl.piotrsurowski;
 
 import pl.piotrsurowski.structure.Structure;
 import pl.piotrsurowski.structure.block.Block;
+import pl.piotrsurowski.structure.compositeblock.CompositeBlock;
 
 import java.util.ArrayList;
 import java.util.LinkedList;
@@ -18,7 +19,7 @@ public class Wall implements Structure {
     @Override
     public Optional<Block> findBlockByColor(String color) {
         Optional<Block> result = Optional.empty();
-        for (Block block : blocks){
+        for (Block block : this.getAllBlocks(blocks)){
             if (block.getColor().equalsIgnoreCase(color)){
                 result = Optional.of(block);
                 break;
@@ -30,7 +31,7 @@ public class Wall implements Structure {
     @Override
     public List<Block> findBlockByMaterial(String material) {
         List<Block> result = new LinkedList<>();
-        for (Block block : blocks){
+        for (Block block : this.getAllBlocks(blocks)){
             if (block.getMaterial().equalsIgnoreCase(material)){
                 result.add(block);
             }
@@ -40,6 +41,18 @@ public class Wall implements Structure {
 
     @Override
     public int count() {
-        return this.blocks.size();
+        return this.getAllBlocks(blocks).size();
+    }
+
+    private List<Block> getAllBlocks(List<Block> blocksIn){
+        List<Block> result = new LinkedList<>();
+        for (Block block : blocksIn){
+            if (block instanceof CompositeBlock){
+                result.addAll(((CompositeBlock) block).getBlocks());
+            } else {
+                result.add(block);
+            }
+        }
+        return result;
     }
 }
